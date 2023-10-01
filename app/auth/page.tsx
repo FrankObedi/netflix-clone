@@ -3,24 +3,34 @@ import Input from "@/components/input";
 import { useState, useCallback } from "react";
 import axios from "axios";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
 const Auth = () => {
-  const router = useRouter();
-
   const [email, setEmail] = useState("");
-  const [name, setname] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+
   const [variant, setVariant] = useState("login");
 
   const toggleVariant = useCallback(() => {
     setVariant((currentVariant) =>
-      currentVariant == "login" ? "register" : "login"
+      currentVariant === "login" ? "register" : "login"
     );
   }, []);
+
+  const login = useCallback(async () => {
+    try {
+      await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/profiles",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [email, password]);
 
   const register = useCallback(async () => {
     try {
@@ -30,27 +40,11 @@ const Auth = () => {
         password,
       });
 
-      // login after registering
       login();
     } catch (error) {
       console.log(error);
     }
-  }, [email, name, password]);
-
-  const login = useCallback(async () => {
-    try {
-      await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl: "",
-      });
-
-      router.push("/");
-    } catch (error) {
-      console.log(error);
-    }
-  }, [email, password, router]);
+  }, [email, name, password, login]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-cover">
@@ -64,11 +58,11 @@ const Auth = () => {
               {variant == "login" ? "Sign In" : "Register"}
             </h2>
             <div className="flex flex-col gap-4">
-              {variant == "register" && (
+              {variant === "register" && (
                 <Input
                   id="name"
                   label="Name"
-                  onChange={(e: any) => setname(e.target.value)}
+                  onChange={(e: any) => setName(e.target.value)}
                   type="text"
                   value={name}
                 />
@@ -89,13 +83,14 @@ const Auth = () => {
               />
             </div>
             <button
-              onClick={variant == "login" ? login : register}
+              onClick={variant === "login" ? login : register}
               className="bg-red-600 py-2 text-white rounded-md w-full mt-10 hover:bg-red-700 transition"
             >
-              {variant == "login" ? "Login" : "Sign Up"}
+              {variant === "login" ? "Login" : "Sign Up"}
             </button>
             <div className="flex flex-row items-center gap-4 mt-8 justify-center">
               <button
+                onClick={() => signIn("google", { callbackUrl: "/profiles" })}
                 className="
                     w-10
                     h-10
@@ -111,7 +106,7 @@ const Auth = () => {
                 <FcGoogle size={30} />
               </button>
               <button
-                onClick={() => signIn("github", { callbackUrl: "/" })}
+                onClick={() => signIn("github", { callbackUrl: "/profiles" })}
                 className="
                     w-10
                     h-10
@@ -129,7 +124,7 @@ const Auth = () => {
             </div>
 
             <p className="text-neutral-500 mt-12">
-              {variant == "login"
+              {variant === "login"
                 ? "New to Netflix?"
                 : "Already have an account?"}
 
@@ -137,7 +132,7 @@ const Auth = () => {
                 onClick={toggleVariant}
                 className="text-white ml-1 hover:uderline cursor-pointer"
               >
-                {variant == "login" ? "Sign up now" : "Login"}
+                {variant === "login" ? "Sign up now" : "Login"}
               </span>
             </p>
           </div>
