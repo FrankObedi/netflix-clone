@@ -6,9 +6,12 @@ import Navbar from "@/components/Navbar";
 import Billboard from "@/components/Billboard";
 import MovieList from "@/components/MovieList";
 import useMoveList from "@/hooks/useMovieList";
+import useFavorites from "@/hooks/useFavorites";
 
 export default function Home() {
   const { data: movies = [] } = useMoveList();
+  const { data: favorites = [] } = useFavorites();
+
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -24,8 +27,9 @@ export default function Home() {
     <>
       <Navbar />
       <Billboard />
-      <div className="pd-40">
+      <div className="pb-40">
         <MovieList title="Trending Now" data={movies} />
+        <MovieList title="My Favorites" data={favorites} />
       </div>
     </>
   );

@@ -11,7 +11,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
     return null;
   }
 
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
   return (
     <div className="flex bg-black w-56 absolute top-14 right-0 py-5 flex-col border-2 border-gray-800">
       <div className="flex flex-col gap-3">
@@ -22,7 +22,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
             alt="profile"
           />
           <p className="text-white text-sm group-hover/item:underline ">
-            {currentUser?.name}
+            {isLoading ? "Loading.." : currentUser?.name}
           </p>
         </div>
         <hr className="bg-gray-600 border-0 h-px my-4" />
