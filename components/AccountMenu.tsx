@@ -1,17 +1,19 @@
 import React from "react";
 import { signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { useRouter } from "next/navigation";
 
 interface AccountMenuProps {
   visible: boolean;
 }
 
 const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
+  const { data: currentUser, isLoading } = useCurrentUser();
+  const router = useRouter();
   if (!visible) {
     return null;
   }
 
-  const { data: currentUser, isLoading } = useCurrentUser();
   return (
     <div className="flex bg-black w-56 absolute top-14 right-0 py-5 flex-col border-2 border-gray-800">
       <div className="flex flex-col gap-3">
@@ -21,7 +23,10 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ visible }) => {
             src="/images/default-red.png"
             alt="profile"
           />
-          <p className="text-white text-sm group-hover/item:underline ">
+          <p
+            onClick={() => router.push("/profiles")}
+            className="text-white text-sm group-hover/item:underline "
+          >
             {isLoading ? "Loading.." : currentUser?.name}
           </p>
         </div>

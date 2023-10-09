@@ -1,14 +1,15 @@
 import React from "react";
 import { BsFillPlayFill } from "react-icons/bs";
 import FavoriteButton from "./FavoriteButton";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import useInfoModal from "@/hooks/useInfoModel";
+import { BsChevronDown } from "react-icons/bs";
 
 interface MovieCardProps {
   data: Record<string, any>;
 }
 const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
-  const router = useRouter();
+  const { openModal } = useInfoModal();
   return (
     <div className="group bg-zinc-900 col-span relative h-[12vw]">
       <img
@@ -88,7 +89,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                         items-center
                         hover:bg-neutral-300
                     "
-              // onClick={() => router.push(`/watch/${data?.id}`)}
               href={{
                 pathname: `/watch/${data?.id}`,
               }}
@@ -96,6 +96,30 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
               <BsFillPlayFill size={25} />
             </Link>
             <FavoriteButton movieId={data?.id} />
+            <button
+              onClick={() => openModal(data?.id)}
+              className="
+              ml-auto 
+              group/item 
+              w-6 
+              h-6 
+              lg:w-10 
+              lg:h-10 
+              border-white 
+              border-2 
+              rounded-full 
+              flex 
+              justify-center 
+              items-center 
+              transition 
+              hover-border-neutral-300
+              "
+            >
+              <BsChevronDown
+                size={20}
+                className="text-white group/item group-hover/item:text-neutral-300"
+              />
+            </button>
           </div>
           <p className="text-green-400 font-semibold mt-4">
             New <span className="text-white">2023</span>

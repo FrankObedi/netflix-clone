@@ -14,7 +14,6 @@ export async function GET(
     await serverAuth();
 
     const movieId = params.movieId;
-    // console.log("BOOODY:", movieId);
 
     if (!movieId || typeof movieId !== "string") {
       throw new Error("Invalid Id");
